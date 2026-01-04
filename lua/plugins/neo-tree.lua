@@ -50,5 +50,13 @@ return {
         },
       },
     },
+    event_handlers = {
+      event = "neo_tree_buffer_enter",
+      hanler = function(arg)
+        vim.cmd([[
+          setlocal number
+        ]])
+      end,
+    },
   },
 }
