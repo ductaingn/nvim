@@ -191,6 +191,8 @@ return {
         "shellcheck",
         "shfmt",
         "flake8",
+        "debugpy",
+        "pyright",
       },
     },
   },
