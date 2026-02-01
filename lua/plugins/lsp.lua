@@ -62,8 +62,9 @@ return {
             "--completion-style=detailed",
             "--function-arg-placeholders",
             "--fallback-style=llvm",
-            "--query-driver=/usr/bin/g++,/usr/bin/c++,/opt/ros/*/include",
+            "--query-driver=/usr/bin/g++,/usr/bin/c++",
             "--compile-commands-dir=..",
+            "--extra-arg=-I/opt/ros/*/include",
           },
           init_options = {
             usePlaceholders = true,
@@ -75,8 +76,9 @@ return {
       setup = {
         clangd = function(_, opts)
           -- Use global variables if they exist, otherwise use defaults
-          local query_driver = vim.g.clangd_query_driver or "/usr/bin/g++,/usr/bin/c++,/opt/ros/*/include"
+          local query_driver = vim.g.clangd_query_driver or "/usr/bin/g++,/usr/bin/c++"
           local compile_dir = vim.g.clangd_compile_dir or ".."
+          local extra_includes = vim.g.clangd_extra_includes or { "-I/opt/ros/humble/include" }
 
           opts.cmd = {
             "clangd",
@@ -89,6 +91,10 @@ return {
             "--query-driver=" .. query_driver,
             "--compile-commands-dir=" .. compile_dir,
           }
+          -- Append the extra includes to the cmd table
+          for _, path in ipairs(extra_includes) do
+            table.insert(opts.cmd, "--extra-arg=-I" .. path)
+          end
 
           local clangd_ext_opts = LazyVim.opts("clangd_extensions.nvim")
           require("clangd_extensions").setup(vim.tbl_deep_extend("force", clangd_ext_opts or {}, { server = opts }))
